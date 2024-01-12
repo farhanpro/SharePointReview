@@ -1,0 +1,45 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "contacts-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/contacts/ContactsWebPart.js",
+          "manifest": "./src/webparts/contacts/ContactsWebPart.manifest.json"
+        }
+      ]
+    },
+    "quick-links-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/quickLinks/QuickLinksWebPart.js",
+          "manifest": "./src/webparts/quickLinks/QuickLinksWebPart.manifest.json"
+        }
+      ]
+    },
+    "annoucments-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/annoucments/AnnoucmentsWebPart.js",
+          "manifest": "./src/webparts/annoucments/AnnoucmentsWebPart.manifest.json"
+        }
+      ]
+    },
+    "test-uploader-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/testUploader/TestUploaderWebPart.js",
+          "manifest": "./src/webparts/testUploader/TestUploaderWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "ContactsWebPartStrings": "lib/webparts/contacts/loc/{locale}.js",
+    "QuickLinksWebPartStrings": "lib/webparts/quickLinks/loc/{locale}.js",
+    "AnnoucmentsWebPartStrings": "lib/webparts/annoucments/loc/{locale}.js",
+    "TestUploaderWebPartStrings": "lib/webparts/testUploader/loc/{locale}.js"
+  }
+}
