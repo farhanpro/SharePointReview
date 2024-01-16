@@ -112,23 +112,25 @@ export default class Annoucments extends React.Component<
 
   EditModal = async (item: any) : Promise<void> => {
     try{
-      const result = await sp.web.lists.getByTitle('Announcements').items.getById(item.Id)();
-      const ImageJson = JSON.parse(result.Image);
+      // const result = await sp.web.lists.getByTitle('Announcements').items.getById(item.Id)();
+      const result = this.state.employeeArr.filter((x: any) => x.Id === item.Id);
+      const ImageJson = JSON.parse(result[0].image);
      
       this.setState({
-        Id : result.Id,
-        title : result.Title,
-        linkdes : result.Link0.Description,
-        link:result.Link0.Url,
+        Id : result[0].Id,
+        title : result[0].title,
+        linkdes : result[0].link.Description,
+        link:result[0].link.Url,
         //For image
-        fieldId : ImageJson.id,
-        uploadedFileName:ImageJson.filename,
-        uploadedFile:ImageJson.serverRelativeUrl,
+        fieldId : result[0].image.fieldId,
+        uploadedFileName:ImageJson.fileName,
+        uploadedFile:ImageJson
+        .serverRelativeUrl,
 
         isModalOpen: true,
         isEditCall: true,
       });
-      console.log(ImageJson,"Image Json");
+     // console.log(ImageJson,"Image Json");
       console.log("Result",result);
     }
     
@@ -272,7 +274,7 @@ export default class Annoucments extends React.Component<
   }
 
   public handleFileUpload = async (_files: any) => {
-    console.log(_files);
+    console.log("Files to be stored here := ",_files);
     const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
     if (_files.length === 0) {
       alert("No files were selected.");
@@ -314,7 +316,7 @@ export default class Annoucments extends React.Component<
     this.setState({ uploadedFileError: "" });
 
     this.setState({ itemId: _file.itemId });
-    this.setState({ uploadedFileName: _file.name });
+    this.setState({ uploadedFileName: _file.path });
   };
 
   public render(): React.ReactElement<IAnnoucmentsProps> {
@@ -436,7 +438,7 @@ export default class Annoucments extends React.Component<
                   newValue?: string | undefined
                 ) => this.setState({ title: newValue || "" })}
               />
-              
+
               <TextField
                 label="Link Description"
                 placeholder="Link Description"
