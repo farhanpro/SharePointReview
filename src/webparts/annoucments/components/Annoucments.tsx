@@ -38,8 +38,10 @@ export default class Annoucments extends React.Component<
       image: null,
       isDeleteOpen: false,
       isEditCall: false,
+      isAddCall:false,
+      deleteId:0,
       handleImage:false,
-      deleteConfirmation:false,
+      Confirmation:false,
 
       titleError: "",
       fileError: "",
@@ -149,7 +151,9 @@ export default class Annoucments extends React.Component<
         this.state.link,
         this.state.Id);
 
-      this.setState({isEditCall:false,
+      this.setState({
+        //isEditCall:false,
+        Confirmation : true,
         isDialogVisible:false,
         isModalOpen:false,
         employeeArr : []})
@@ -222,9 +226,12 @@ export default class Annoucments extends React.Component<
   deleteItem = async  (item:any) => {
     try{
     commonService = new DataService(this.props.spcontext),
-    await commonService.deleteItem(item),
+    await commonService.deleteItem(this.state.deleteId),
+   // console.log("Deleted from parameter",item);
+   // console.log("Deleted from parameter",this.state.deleteId);
      this.setState({
-      deleteConfirmation:true,
+      Confirmation:true,
+      isAddCall:false,
       isDeleteOpen:false,
       employeeArr:[]
     })
@@ -247,8 +254,13 @@ export default class Annoucments extends React.Component<
         this.state.linkdes,
         this.state.link);
       
-        this.setState({ isDialogVisible: false, 
-        isModalOpen: false ,employeeArr : []});
+        this.setState({ 
+        isDialogVisible: false, 
+        isModalOpen: false ,
+        Confirmation : true,
+        isAddCall:true,
+        employeeArr : []
+      });
          console.log("Added", items);
          this.componentDidMount();
     }
@@ -256,22 +268,7 @@ export default class Annoucments extends React.Component<
     {
       console.log(error);
     }
-          // } catch (error) {
-      // try {
-      //   const uploaded = sp.web.lists
-      //     .getByTitle("Announcements")
-      //     .items.select()
-      //     .add({
-      //       Title: this.state.title,
-      //       Link0: {
-      //         Description: this.state.linkdes,
-      //         Url: this.state.link,
-      //       },
-      //       Image: JSON.stringify(json),
-      //     });
-      //   console.log("Error this is error while adding := ", error);
-      // }
-    
+         
   }
 
   public handleFileUpload = async (_files: any) => {
@@ -426,9 +423,10 @@ export default class Annoucments extends React.Component<
       )}
     </Stack>
   )}
-</Dropzone>
+            </Dropzone>
 
 
+             
               <TextField
                 label="Title"
                 placeholder="Title"
@@ -438,6 +436,7 @@ export default class Annoucments extends React.Component<
                   newValue?: string | undefined
                 ) => this.setState({ title: newValue || "" })}
               />
+              
               <TextField
                 label="Link Description"
                 placeholder="Link Description"
@@ -503,7 +502,7 @@ export default class Annoucments extends React.Component<
                     ariaLabel="Delete"
                     // onClick={()=>{this.deleteItem(item.Id)}}
                     onClick={() => {
-                      this.setState({ isDeleteOpen: true });
+                      this.setState({ isDeleteOpen: true ,deleteId:item.Id});
                     }}
                    
                   />
@@ -536,7 +535,7 @@ export default class Annoucments extends React.Component<
                       tokens={{ childrenGap: 10 }}
                     >
                       <PrimaryButton
-                        onClick={async () => { this.deleteItem(item.Id)}}
+                        onClick={ () => { this.deleteItem(item.Id)}}
                       >
                         Yes
                       </PrimaryButton>
@@ -550,9 +549,9 @@ export default class Annoucments extends React.Component<
 
 
                   <Modal
-                    isOpen={this.state.deleteConfirmation}
+                    isOpen={this.state.Confirmation}
                     onDismiss={() => {
-                      this.setState({ deleteConfirmation: false });
+                      this.setState({ Confirmation: false,isEditCall : false,isAddCall:false });
                     }}
                     isBlocking={false}
                     styles={{ main: { width: "40%", height: "20%" } }}
@@ -567,7 +566,7 @@ export default class Annoucments extends React.Component<
                     </Stack>
 
                     <Stack styles={{ root: { paddingLeft: "20px" } }}>
-                      <h2>Entry Deleted</h2>
+                      <h2>{this.state.isEditCall == true ? 'Entry Updated ':'Entry Deleted' && this.state.isAddCall == true ? 'Entry Added ':'Entry Deleted' }</h2>
                     </Stack>
 
                     <Stack
@@ -577,7 +576,7 @@ export default class Annoucments extends React.Component<
                       tokens={{ childrenGap: 10 }}
                     >
                       <PrimaryButton
-                        onClick={ () => {this.setState({deleteConfirmation:false})}}
+                        onClick={ () => {this.setState({Confirmation:false,isEditCall:false,isAddCall:false})}}
                       >
                         Okay
                       </PrimaryButton>

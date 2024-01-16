@@ -8,8 +8,10 @@ export interface IAnnouncmentsState {
     image : any;
     isDeleteOpen:boolean;
     isEditCall : boolean;
+    isAddCall : boolean;
     handleImage:boolean;
-    deleteConfirmation:boolean;
+    Confirmation:boolean;
+    deleteId : number;
     
     //For images one 
     // imageIdForEdit : string;
