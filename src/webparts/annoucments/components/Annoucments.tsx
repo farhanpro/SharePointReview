@@ -3,8 +3,22 @@ import type { IAnnoucmentsProps } from "./IAnnoucmentsProps";
 import { SPFI, SPFx, spfi } from "@pnp/sp/presets/all";
 import { IAnnouncmentsState } from "./IAnnoucments.state";
 import { Stack } from "@fluentui/react/lib/Stack";
-import { Icon, IconButton, Modal } from "office-ui-fabric-react";
-import { PrimaryButton, DefaultButton,TextField, TooltipHost, Text } from "@fluentui/react";
+//import {  } from "office-ui-fabric-react";
+import {
+  PrimaryButton,
+  DefaultButton,
+  TextField,
+  TooltipHost,
+  IconButton,
+  Text,
+  Icon,
+  Modal,
+  Dialog,
+  DialogFooter,
+  MessageBar,
+  DialogType,
+  MessageBarType,
+} from "@fluentui/react";
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import DataService from "../../common/dataservices";
@@ -17,7 +31,7 @@ import DataService from "../../common/dataservices";
 
 let sp: SPFI;
 let commonService: any = null;
-let items : any = null;
+let items: any = null;
 
 //const COMMONSERVICE : any = null;
 
@@ -38,10 +52,10 @@ export default class Annoucments extends React.Component<
       image: null,
       isDeleteOpen: false,
       isEditCall: false,
-      isAddCall:false,
-      deleteId:0,
-      handleImage:false,
-      Confirmation:false,
+      isAddCall: false,
+      deleteId: 0,
+      handleImage: false,
+      Confirmation: false,
 
       titleError: "",
       fileError: "",
@@ -58,23 +72,18 @@ export default class Annoucments extends React.Component<
       employeeArr: [],
     };
 
-
     sp = spfi().using(SPFx(this.props.spcontext));
     this.onDrop = (files) => {
       this.setState({ image: files });
     };
   }
-  
-  
-
-
 
   async componentDidMount(): Promise<void> {
     try {
       const commonService = new DataService(this.props.spcontext);
 
       items = await commonService.getAnnouncements();
-  
+
       items.map((item: any) => {
         this.setState({
           Id: item.Id,
@@ -97,7 +106,6 @@ export default class Annoucments extends React.Component<
       // Handle the error if needed
     }
   }
-  
 
   OpenModal = () => {
     this.setState({
@@ -110,39 +118,36 @@ export default class Annoucments extends React.Component<
     });
   };
 
-  EditModal = async (item: any) : Promise<void> => {
-    try{
+  EditModal = async (item: any): Promise<void> => {
+    try {
       // const result = await sp.web.lists.getByTitle('Announcements').items.getById(item.Id)();
-      const result = this.state.employeeArr.filter((x: any) => x.Id === item.Id);
+      const result = this.state.employeeArr.filter(
+        (x: any) => x.Id === item.Id
+      );
       const ImageJson = JSON.parse(result[0].image);
-     
+
       this.setState({
-        Id : result[0].Id,
-        title : result[0].title,
-        linkdes : result[0].link.Description,
-        link:result[0].link.Url,
+        Id: result[0].Id,
+        title: result[0].title,
+        linkdes: result[0].link.Description,
+        link: result[0].link.Url,
         //For image
-        fieldId : result[0].image.fieldId,
-        uploadedFileName:ImageJson.fileName,
-        uploadedFile:ImageJson
-        .serverRelativeUrl,
+        fieldId: result[0].image.fieldId,
+        uploadedFileName: ImageJson.fileName,
+        uploadedFile: ImageJson.serverRelativeUrl,
 
         isModalOpen: true,
         isEditCall: true,
       });
-     // console.log(ImageJson,"Image Json");
-      console.log("Result",result);
+      // console.log(ImageJson,"Image Json");
+      console.log("Result", result);
+    } catch (err) {
+      console.log("Error", err);
     }
-    
-    catch(err)
-    {
-      console.log("Error",err)
-    }
-    
   };
 
-  UpdateModal = async () : Promise<void> => {
-    try{
+  UpdateModal = async (): Promise<void> => {
+    try {
       const commonService = new DataService(this.props.spcontext);
       const uploaded = await commonService.updateAnnouncement(
         this.state.fieldId,
@@ -151,20 +156,20 @@ export default class Annoucments extends React.Component<
         this.state.title,
         this.state.linkdes,
         this.state.link,
-        this.state.Id);
+        this.state.Id
+      );
 
       this.setState({
         //isEditCall:false,
-        Confirmation : true,
-        isDialogVisible:false,
-        isModalOpen:false,
-        employeeArr : []})
-      console.log("Updated",uploaded);
+        Confirmation: true,
+        isDialogVisible: false,
+        isModalOpen: false,
+        employeeArr: [],
+      });
+      console.log("Updated", uploaded);
       this.componentDidMount();
-    }
-    catch(err)
-    {
-      console.log("Error",err)
+    } catch (err) {
+      console.log("Error", err);
     }
     // try
     // {
@@ -177,7 +182,7 @@ export default class Annoucments extends React.Component<
     //     fileName: `${this.state.uploadedFileName}`,
     //     serverUrl: "https://sonorasoftware365.sharepoint.com",
     //     serverRelativeUrl: `${this.state.uploadedFile}`,
-    //   }; 
+    //   };
 
     //     const updated = sp.web.lists
     //                     .getByTitle("Announcements")
@@ -197,56 +202,54 @@ export default class Annoucments extends React.Component<
     // catch(error){
     //   console.log(error);
     // }
-  }
-
-  clearStates =()=>{
-    this.setState({
-      isOpen:false,
-      isModalOpen:false,
-      title:"",
-      link:null,
-      linkdes:"",
-      image:null,
-      uploadedFileName:"",
-      uploadedFileError:"",
-      file:[],
-      fieldId:"",
-      uploadedFile:[],
-      itemId:0,
-      errorMessage:"",
-      isDeleteOpen:false,
-      isEditCall:false,
-      handleImage:false,
-      titleError:"",
-      fileError:"",
-      dialogMessage:"",
-      isDialogVisible:false,
-      bgError:"",
-    })
-  }
-
-  deleteItem = async  (item:any) => {
-    try{
-    commonService = new DataService(this.props.spcontext),
-    await commonService.deleteItem(this.state.deleteId),
-   // console.log("Deleted from parameter",item);
-   // console.log("Deleted from parameter",this.state.deleteId);
-     this.setState({
-      Confirmation:true,
-      isAddCall:false,
-      isDeleteOpen:false,
-      employeeArr:[]
-    })
-    this.componentDidMount();
-  }
-  catch (error)
-  {
-    console.log(error);
-  }
   };
 
-  AddItem = async () : Promise<void>  =>{
-    try{
+  clearStates = () => {
+    this.setState({
+      isOpen: false,
+      isModalOpen: false,
+      title: "",
+      link: null,
+      linkdes: "",
+      image: null,
+      uploadedFileName: "",
+      uploadedFileError: "",
+      file: [],
+      fieldId: "",
+      uploadedFile: [],
+      itemId: 0,
+      errorMessage: "",
+      isDeleteOpen: false,
+      isEditCall: false,
+      handleImage: false,
+      titleError: "",
+      fileError: "",
+      dialogMessage: "",
+      isDialogVisible: false,
+      bgError: "",
+    });
+  };
+
+  deleteItem = async (item: any) => {
+    try {
+      (commonService = new DataService(this.props.spcontext)),
+        await commonService.deleteItem(this.state.deleteId),
+        // console.log("Deleted from parameter",item);
+        // console.log("Deleted from parameter",this.state.deleteId);
+        this.setState({
+          Confirmation: true,
+          isAddCall: false,
+          isDeleteOpen: false,
+          employeeArr: [],
+        });
+      this.componentDidMount();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  AddItem = async (): Promise<void> => {
+    try {
       const commonService = new DataService(this.props.spcontext);
       await commonService.addAnnouncement(
         this.state.fieldId,
@@ -254,27 +257,25 @@ export default class Annoucments extends React.Component<
         this.state.uploadedFile,
         this.state.title,
         this.state.linkdes,
-        this.state.link);
-      
-        this.setState({ 
-        isDialogVisible: false, 
-        isModalOpen: false ,
-        Confirmation : true,
-        isAddCall:true,
-        employeeArr : []
+        this.state.link
+      );
+
+      this.setState({
+        isDialogVisible: false,
+        isModalOpen: false,
+        Confirmation: true,
+        isAddCall: true,
+        employeeArr: [],
       });
-         console.log("Added", items);
-         this.componentDidMount();
-    }
-    catch(error)
-    {
+      console.log("Added", items);
+      this.componentDidMount();
+    } catch (error) {
       console.log(error);
     }
-         
-  }
+  };
 
   public handleFileUpload = async (_files: any) => {
-    console.log("Files to be stored here := ",_files);
+    console.log("Files to be stored here := ", _files);
     const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
     if (_files.length === 0) {
       alert("No files were selected.");
@@ -294,11 +295,10 @@ export default class Annoucments extends React.Component<
           this.setState({ fieldId: _fileId });
           const imageUrl = response.data.ServerRelativeUrl;
           this.setState({ uploadedFile: imageUrl });
-          console.log("Image Url",imageUrl);
+          console.log("Image Url", imageUrl);
 
           // this.addItem(imageUrl);
-        })
-        
+        });
     }
 
     const allowedExtensionsRegex = /\.(png|jpeg|jpg|svg)$/i;
@@ -321,7 +321,7 @@ export default class Annoucments extends React.Component<
 
   public render(): React.ReactElement<IAnnoucmentsProps> {
     return (
-      <Stack >
+      <Stack>
         <Stack className={styles.box2}>
           <Stack className={styles.box2}>
             <Icon
@@ -334,101 +334,116 @@ export default class Annoucments extends React.Component<
             </TooltipHost>
           </Stack>
           <Stack>
-          <IconButton
-                  className={styles.iconButton}
+            <IconButton
+              className={styles.iconButton}
               iconProps={{ iconName: "Add" }}
               title="Add"
               ariaLabel="Add"
               color="#5A2A82"
               onClick={this.OpenModal}
-             // style={{ fontSize: "10%" }}
+              // style={{ fontSize: "10%" }}
             />
           </Stack>
 
           <Modal
             isOpen={this.state.isModalOpen}
             onDismiss={() => {
-              this.setState({ isModalOpen: false , isEditCall:false,isOpen:false});
+              this.setState({
+                isModalOpen: false,
+                isEditCall: false,
+                isOpen: false,
+              });
             }}
             isBlocking={false}
             styles={{ main: { width: "40%", height: "70%" } }}
           >
-           
             <Stack horizontal className={`${styles.headingStyle}`}>
               <Text variant={"xLarge"} className={`${styles.headingText}`}>
-               {this.state.isEditCall == true ? "Edit Modal" : "Add Model" } 
+                {this.state.isEditCall == true
+                  ? "Edit Announcement"
+                  : "Add Announcement"}
               </Text>
+
+              <IconButton
+                iconProps={{ iconName: "Cancel" }}
+                className={styles.iconButton}
+                title="Cancel"
+                ariaLabel="Cancel"
+                onClick={() => {
+                  this.clearStates();
+                }}
+                style={{
+                  fontSize: "50px",
+                  color: "#FFFFFF",
+                  // Adjust spacing as needed
+                }}
+              />
             </Stack>
             <Stack className={styles.insideModal}>
+              <Dropzone onDrop={(files) => this.handleFileUpload(files)}>
+                {({ getRootProps, getInputProps }) => (
+                  <Stack className={styles.dragDropFile}>
+                    <Stack
+                      {...getRootProps({
+                        onDrop: (event) => event.stopPropagation(),
+                      })}
+                      className={styles.inputSection}
+                    >
+                      <input
+                        {...getInputProps()}
+                        placeholder="No File Chosen"
+                        required
+                        //style={{ display: "none" }} // Hide the default input style
+                      />
+                      <Icon
+                        iconName="CloudUpload"
+                        style={{
+                          fontSize: "38px",
+                          color: "#5A2A82",
+                          marginBottom: "10px", // Adjust spacing as needed
+                        }}
+                      />
+                      <p>Drag and Drop files here, Or click to select files</p>
+                      <div>
+                        <PrimaryButton className={styles.chooseBtn}>
+                          Choose File
+                        </PrimaryButton>
+                      </div>
+                      <p>
+                        {this.state.uploadedFileName
+                          ? ""
+                          : this.state.uploadedFileError
+                          ? ""
+                          : this.state.fileError}
+                      </p>
+                    </Stack>
+                    {this.state.uploadedFileName && (
+                      <Stack
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: "60px",
+                        }}
+                      >
+                        <Icon
+                          iconName="Document"
+                          style={{
+                            marginRight: "8px",
+                            fontSize: "20px",
+                            color: "#5A2A82",
+                            marginLeft: "10%",
+                            marginTop: "5px",
+                          }}
+                        />
+                        <span>{this.state.uploadedFileName}</span>
+                      </Stack>
+                    )}
+                  </Stack>
+                )}
+              </Dropzone>
 
-            <Dropzone onDrop={(files) => this.handleFileUpload(files)}>
-  {({ getRootProps, getInputProps }) => (
-    <Stack
-        className={styles.dragDropFile}
-    >
-      <Stack
-        {...getRootProps({
-          
-          onDrop: (event) => event.stopPropagation(),
-        })}
-       
-        className={styles.inputSection}
-      >
-        <input
-          {...getInputProps()}
-          placeholder="No File Chosen"
-          required
-          //style={{ display: "none" }} // Hide the default input style
-        />
-        <Icon
-          iconName="CloudUpload"
-          style={{
-            fontSize: "38px",
-            color: "#5A2A82",
-            marginBottom: "10px", // Adjust spacing as needed
-          }}
-        />
-        <p >
-          Drag and Drop files here, Or click to select files
-        </p>
-        <div
-        
-        >
-          <PrimaryButton className={styles.chooseBtn}>Choose File</PrimaryButton>
-          {/* Add your Edit and Cancel buttons here */}
-         
-        </div>
-        <p style={{ margin: "10px 0", color: "red" }}>
-          {this.state.uploadedFileName
-            ? ""
-            : this.state.uploadedFileError
-            ? ""
-            : this.state.fileError}
-        </p>
-      </Stack>
-      {this.state.uploadedFileName && (
-        <Stack style={{ display: "flex", alignItems: "center" }}>
-          <Icon
-            iconName="Document"
-            style={{
-              marginRight: "8px",
-              fontSize: "20px",
-              color: "#5A2A82",
-              marginLeft: "10%",
-              marginTop: "5px",
-            }}
-          />
-          <span >
-            {this.state.uploadedFileName}
-          </span>
-        </Stack>
-      )}
-    </Stack>
-  )}
-            </Dropzone>
-
-
-             
               <TextField
                 label="Title"
                 placeholder="Title"
@@ -437,6 +452,7 @@ export default class Annoucments extends React.Component<
                   e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
                   newValue?: string | undefined
                 ) => this.setState({ title: newValue || "" })}
+                required // Add this line to mark the field as required
               />
 
               <TextField
@@ -447,6 +463,7 @@ export default class Annoucments extends React.Component<
                   e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
                   newValue?: string | undefined
                 ) => this.setState({ linkdes: newValue || "" })}
+                required
               />
               <TextField
                 label="Link URL"
@@ -456,12 +473,40 @@ export default class Annoucments extends React.Component<
                   e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
                   newValue?: string | undefined
                 ) => this.setState({ link: newValue || "" })}
+                required
               />
               <Stack className={styles.defaultButton}>
-              {this.state.isEditCall == true ?  <DefaultButton onClick={()=>{this.UpdateModal()}}>Edit Image</DefaultButton> :<DefaultButton disabled = {this.state.linkdes == "" ? true : false} onClick={()=>{this.AddItem()}}>Add Image</DefaultButton> }
-              <DefaultButton onClick={() =>{this.clearStates()}} className={styles.cancelBtn}> Cancel</DefaultButton>
+                <DefaultButton
+                  onClick={() => {
+                    this.clearStates();
+                  }}
+                  className={styles.cancelBtn}
+                >
+                  {" "}
+                  Cancel
+                </DefaultButton>
+                {this.state.isEditCall == true ? (
+                  <PrimaryButton
+                    className={styles.chooseBtn}
+                    onClick={() => {
+                      this.UpdateModal();
+                    }}
+                  >
+                    Edit Image
+                  </PrimaryButton>
+                ) : (
+                  <PrimaryButton
+                    className={styles.chooseBtn}
+                    disabled={this.state.linkdes   == "" &&  this.state.title == "" && this.state.link == "" ? true : false}
+                    onClick={() => {
+                      this.AddItem();
+                    }}
+                  >
+                    Add Image
+                  </PrimaryButton>
+                )}
               </Stack>
-             </Stack>
+            </Stack>
           </Modal>
         </Stack>
 
@@ -498,15 +543,14 @@ export default class Annoucments extends React.Component<
                 </Stack>
                 <Stack className={styles.box2}>
                   <IconButton
-                  className={styles.iconButton}
+                    className={styles.iconButton}
                     iconProps={{ iconName: "Delete" }}
                     title="Delete"
                     ariaLabel="Delete"
                     // onClick={()=>{this.deleteItem(item.Id)}}
                     onClick={() => {
-                      this.setState({ isDeleteOpen: true ,deleteId:item.Id});
+                      this.setState({ isDeleteOpen: true, deleteId: item.Id });
                     }}
-                   
                   />
 
                   <Modal
@@ -524,6 +568,20 @@ export default class Annoucments extends React.Component<
                       >
                         Confirmation
                       </Text>
+                      <IconButton
+                        iconProps={{ iconName: "Cancel" }}
+                        className={styles.iconButton}
+                        title="Cancel"
+                        ariaLabel="Cancel"
+                        onClick={() => {
+                          this.clearStates();
+                        }}
+                        style={{
+                          fontSize: "50px",
+                          color: "#FFFFFF",
+                          // Adjust spacing as needed
+                        }}
+                      />
                     </Stack>
 
                     <Stack styles={{ root: { paddingLeft: "20px" } }}>
@@ -537,7 +595,9 @@ export default class Annoucments extends React.Component<
                       tokens={{ childrenGap: 10 }}
                     >
                       <PrimaryButton
-                        onClick={ () => { this.deleteItem(item.Id)}}
+                        onClick={() => {
+                          this.deleteItem(item.Id);
+                        }}
                       >
                         Yes
                       </PrimaryButton>
@@ -549,8 +609,49 @@ export default class Annoucments extends React.Component<
                     </Stack>
                   </Modal>
 
+                  <Dialog
+                    hidden={!this.state.Confirmation}
+                    onDismiss={() => {
+                      this.setState({
+                        Confirmation: false,
+                        isEditCall: false,
+                        isAddCall: false,
+                      });
+                    }}
+                    dialogContentProps={{
+                      type: DialogType.normal,
+                      title: "Success!",
+                    }}
+                  >
+                    {this.state.Confirmation && (
+                      <MessageBar
+                        messageBarType={MessageBarType.success}
+                        isMultiline={false}
+                        className={"dialogMessage"}
+                      >
+                        {this.state.isEditCall == true
+                          ? "Announcement Updated "
+                          : "Announcement Deleted" &&
+                            this.state.isAddCall == true
+                          ? "Announcement Added "
+                          : "Announcement Deleted"}
+                      </MessageBar>
+                    )}
+                    <DialogFooter>
+                      <DefaultButton
+                        onClick={() => {
+                          this.setState({
+                            Confirmation: false,
+                            isEditCall: false,
+                            isAddCall: false,
+                          });
+                        }}
+                        text="Ok"
+                      />
+                    </DialogFooter>
+                  </Dialog>
 
-                  <Modal
+                  {/* <Modal
                     isOpen={this.state.Confirmation}
                     onDismiss={() => {
                       this.setState({ Confirmation: false,isEditCall : false,isAddCall:false });
@@ -565,6 +666,18 @@ export default class Annoucments extends React.Component<
                       >
                         Confirmation
                       </Text>
+                      <IconButton
+          iconProps={{ iconName: 'Cancel' }}
+          className={styles.iconButton}
+          title="Cancel"
+          ariaLabel="Cancel"
+          onClick={() =>{this.clearStates()}}
+          style={{
+            fontSize: "50px",
+            color: "#FFFFFF",
+          // Adjust spacing as needed
+          }}
+        />
                     </Stack>
 
                     <Stack styles={{ root: { paddingLeft: "20px" } }}>
@@ -583,15 +696,17 @@ export default class Annoucments extends React.Component<
                         Okay
                       </PrimaryButton>
                     </Stack>
-                  </Modal>
+                  </Modal> */}
 
                   <IconButton
-                  className={styles.iconButton}
+                    className={styles.iconButton}
                     iconProps={{ iconName: "EditSolid12" }}
                     title="Edit"
                     ariaLabel="Edit"
-                    color= "#5A2A82"
-                    onClick={()=>{this.EditModal(item)}}
+                    color="#5A2A82"
+                    onClick={() => {
+                      this.EditModal(item);
+                    }}
                     //style={{ fontSize: "180px" }}
                   />
                 </Stack>

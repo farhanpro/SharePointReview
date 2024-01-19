@@ -4,7 +4,7 @@ import styles from "./QuickLinks.module.scss";
 import type { IQuickLinksProps } from './IQuickLinksProps';
 //import { escape } from '@microsoft/sp-lodash-subset';
 import { SPFI, SPFx, spfi } from '@pnp/sp/presets/all';
-import { IconButton, Stack,TooltipHost,Text,  Link,StackItem, Icon } from 'office-ui-fabric-react';
+import { IconButton, Stack,TooltipHost,Text,  Link,StackItem, Icon } from "@fluentui/react";
 import Constants from '../../common/Constants';
 import { IQuickLinksState } from './IQuickLinksState';
 

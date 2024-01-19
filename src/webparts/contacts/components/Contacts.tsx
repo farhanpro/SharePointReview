@@ -5,7 +5,7 @@ import { Text, IconButton, Stack, TooltipHost } from "@fluentui/react";
 import Constants from "../../common/Constants";
 import { SPFI, SPFx, spfi } from "@pnp/sp/presets/all";
 import { IContactsState } from "./IContacts.state";
-import { Icon, Link, StackItem } from "office-ui-fabric-react";
+import { Icon, Link, StackItem } from "@fluentui/react";
 
 let sp: SPFI;
 export default class Contacts extends React.Component<
@@ -81,7 +81,7 @@ export default class Contacts extends React.Component<
                         horizontal
                         style={{
                           borderBottom: "1px solid #EEEEEE",
-                          padding: "10px 0px 10px 24px",
+                          padding: "10px 0px 10px 24px"
                         }}
                       >
                         <StackItem className={styles.iconStackStyle}>
