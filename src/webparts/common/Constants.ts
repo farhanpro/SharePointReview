@@ -66,6 +66,7 @@ export default class Constants {
         PDF:  {iconName: "Pdf", style: {fontSize: 15,color:'#FF7285'}},
         WORD:  {iconName: "WordDocument", style: {fontSize: 15,color:'#316ACA'}},
         PHONE: {iconName: "Phone", style: {fontSize: 15}},
+        ADDCIRCLE : {iconName:"Add",style:{fontSize:15,color:'#fff'}},
     }
 
     public static STACKTOKENS = {

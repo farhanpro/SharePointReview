@@ -333,17 +333,17 @@ export default class Annoucments extends React.Component<
               <h2 className={styles.title}>Annoucements</h2>
             </TooltipHost>
           </Stack>
-          <Stack>
+          
             <IconButton
-              className={styles.iconButton}
-              iconProps={{ iconName: "Add" }}
-              title="Add"
-              ariaLabel="Add"
+             
+              iconProps={{ iconName: "ADD" }}
+              title="ADD"
+              ariaLabel="ADD"
               color="#5A2A82"
               onClick={this.OpenModal}
               // style={{ fontSize: "10%" }}
             />
-          </Stack>
+          
 
           <Modal
             isOpen={this.state.isModalOpen}
@@ -355,7 +355,7 @@ export default class Annoucments extends React.Component<
               });
             }}
             isBlocking={false}
-            styles={{ main: { width: "40%", height: "70%" } }}
+            styles={{ main: { width: "50%", height: "85%" } }}
           >
             <Stack horizontal className={`${styles.headingStyle}`}>
               <Text variant={"xLarge"} className={`${styles.headingText}`}>
@@ -366,7 +366,7 @@ export default class Annoucments extends React.Component<
 
               <IconButton
                 iconProps={{ iconName: "Cancel" }}
-                className={styles.iconButton}
+                className={`${styles.cancelBtn}`}
                 title="Cancel"
                 ariaLabel="Cancel"
                 onClick={() => {
@@ -374,12 +374,16 @@ export default class Annoucments extends React.Component<
                 }}
                 style={{
                   fontSize: "50px",
-                  color: "#FFFFFF",
+                  color:"#2E3B4E",
+                  opacity: "1",
+                  marginRight:"10px",
+                  marginTop:"10px"
                   // Adjust spacing as needed
                 }}
               />
             </Stack>
             <Stack className={styles.insideModal}>
+            
               <Dropzone onDrop={(files) => this.handleFileUpload(files)}>
                 {({ getRootProps, getInputProps }) => (
                   <Stack className={styles.dragDropFile}>
@@ -474,7 +478,17 @@ export default class Annoucments extends React.Component<
                   newValue?: string | undefined
                 ) => this.setState({ link: newValue || "" })}
                 required
+                
               />
+             {(
+  this.state.link === null ||
+  this.state.title === "" ||
+  this.state.linkdes === "" ||
+  this.state.uploadedFileName == ""
+) && (
+  <div style={{ color: "red" }}>Please enter all required fields</div>
+)}
+
               <Stack className={styles.defaultButton}>
                 <DefaultButton
                   onClick={() => {
@@ -488,21 +502,22 @@ export default class Annoucments extends React.Component<
                 {this.state.isEditCall == true ? (
                   <PrimaryButton
                     className={styles.chooseBtn}
+                    disabled={this.state.link === null || this.state.title === "" || this.state.linkdes === ""||this.state.uploadedFileName == ""}
                     onClick={() => {
                       this.UpdateModal();
                     }}
                   >
-                    Edit Image
+                    Save Image
                   </PrimaryButton>
                 ) : (
                   <PrimaryButton
                     className={styles.chooseBtn}
-                    disabled={this.state.linkdes   == "" &&  this.state.title == "" && this.state.link == "" ? true : false}
+                    disabled={this.state.link === null || this.state.title === "" || this.state.linkdes === ""||this.state.uploadedFileName == ""}
                     onClick={() => {
                       this.AddItem();
                     }}
                   >
-                    Add Image
+                    Save Image
                   </PrimaryButton>
                 )}
               </Stack>
@@ -570,17 +585,14 @@ export default class Annoucments extends React.Component<
                       </Text>
                       <IconButton
                         iconProps={{ iconName: "Cancel" }}
-                        className={styles.iconButton}
+                        className={styles.cancelBtn}
+                       
                         title="Cancel"
                         ariaLabel="Cancel"
                         onClick={() => {
                           this.clearStates();
                         }}
-                        style={{
-                          fontSize: "50px",
-                          color: "#FFFFFF",
-                          // Adjust spacing as needed
-                        }}
+                        
                       />
                     </Stack>
 

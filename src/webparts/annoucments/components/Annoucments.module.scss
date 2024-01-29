@@ -14,19 +14,22 @@
   text-align: center;
 }
 .headingStyle {
-  background-color: #2D2247;
-  padding: 5px 5px;
+  background-color: #FFF;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   position: sticky;
 }
 
 .headingText {
-  color: #FFF;
-  margin-left: 25px;
+  color: #5A2D83;
+  margin-top: 20px;
+  margin-left: 20px;
   display: inline-block !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap;
-  width: 100% !important;
+  width: 50% !important;
  
 }
 
@@ -78,6 +81,7 @@
 }
 .insideModal{
   padding:20px
+
 }
 .dragDropFile{
          width: 100%;
@@ -99,7 +103,8 @@
   
 }
 .iconButton {
-  font-size: 180px;
+   max-height: 2rem;
+   
   color: #5A2A82;
  // background-color: #ffffff;
   padding: 5px;
@@ -112,7 +117,10 @@
   background-color:#5A2A82;
 }
 .cancelBtn{
+  padding: 10px;
   margin-right: 10px;
+  color: #5A2A82;
+  border-color: #5A2A82;
  
 }
 .boxicons{

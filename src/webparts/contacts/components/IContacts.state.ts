@@ -3,6 +3,8 @@ export interface IContactsState {
     Title : string;
     ContactType:string;
     Contact : string;
+    isAddOpen : boolean;
+    Confirmation:boolean;
     ContactsArr  : ContactStateArr[]
 }
 interface ContactStateArr {
